@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/faculty_login.css'%}">
+    <title>Faculty Login Page</title>
+</head>
+
+<body>
+
+    <div class="container" id="container">
+        <div class="form-container sign-in">
+            <form action="" method="POST">
+                <h1>Faculty Login</h1>
+                <span class="mb-0 text-muted">
+                    {% if msg %}
+                        {{ msg | safe }}
+                    {% else %}
+                        Login page
+                    {% endif %}
+                </span>
+                {% csrf_token %}
+                {{form.username}}
+                {{form.password}}
+                <a href="#">Forget Your Password?</a>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-right">
+                    <h1>Hello, Faculty!</h1>
+                    <p>Click the button below to proceed Bits login</p>
+                    <a href="{% url 'login_bits' %}" class="wh">BITS Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
