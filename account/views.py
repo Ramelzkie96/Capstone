@@ -72,10 +72,20 @@ def faculty(request):
     return render(request, 'faculty.html')
 
 
-def superuser_or_login_required(view_func):
+def bits_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        if request.user.is_authenticated and (request.user.is_superuser or request.user.is_Bits or request.user.is_Faculty):
+        if request.user.is_authenticated and request.user.is_Bits:
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('home')  # Redirect to the appropriate login page
+
+    return _wrapped_view
+
+def faculty_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_Faculty:
             return view_func(request, *args, **kwargs)
         else:
             return redirect('home')  # Redirect to the appropriate login page
