@@ -26,9 +26,8 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     is_Faculty = models.BooleanField('Is Faculty', default=False)
     is_Bits = models.BooleanField('Is Bits', default=False)
-    
+    profile_picture = models.ImageField(upload_to='images/', null=True, blank=True) 
     objects = CustomUserManager()
-
     groups = models.ManyToManyField(
         "auth.Group",
         related_name="custom_user_set",

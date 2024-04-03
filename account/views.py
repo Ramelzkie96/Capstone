@@ -7,61 +7,29 @@ from django.contrib.auth.decorators import user_passes_test
 
 # Create your views here.
 
-def index(request):
-    return render(request, 'index.html')
-
-def login_bits(request):
+def login_view(request):
     form = LoginForm(request.POST or None)
     msg = None
-
     if request.method == 'POST':
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
-
-            if user is not None:
-                if user.is_Bits:
-                    login(request, user)
-                    return redirect('bits')
-                else:
-                    msg = 'Faculty account cant login'
+            if user is not None and user.is_Bits:
+                login(request, user)
+                return redirect('bits')
+            elif user is not None and user.is_Faculty:
+                login(request, user)
+                return redirect('faculty')
             else:
-                msg = 'Invalid credentials'
+                msg= 'invalid credentials'
         else:
-            msg = 'Error validating form'
-
-    return render(request, 'login_bits.html', {'form': form, 'msg': msg})
-
-
-
-
-def login_faculty(request):
-    form = LoginForm(request.POST or None)
-    msg = None
-
-    if request.method == 'POST':
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-
-            if user is not None:
-                if user.is_Faculty:
-                    login(request, user)
-                    return redirect('faculty')
-                else:
-                    msg = 'Bits account cant login'
-            else:
-                msg = 'Ivalid creditial'
-        else:
-            msg = 'Error validating form'
-
-    return render(request, 'login_faculty.html', {'form': form, 'msg': msg})
+            msg = 'error validating form'
+    return render(request, 'login.html', {'form': form, 'msg': msg})
 
 def logoutUser(request):
     logout(request)
-    return redirect('home')
+    return redirect('login_view')
 
 @login_required(login_url='home')  # Change 'index' to 'login_bits' or the appropriate URL
 def bits(request):
@@ -78,7 +46,7 @@ def bits_required(view_func):
         if request.user.is_authenticated and request.user.is_Bits:
             return view_func(request, *args, **kwargs)
         else:
-            return redirect('home')  # Redirect to the appropriate login page
+            return redirect('login_view')  # Redirect to the appropriate login page
 
     return _wrapped_view
 
@@ -88,13 +56,9 @@ def faculty_required(view_func):
         if request.user.is_authenticated and request.user.is_Faculty:
             return view_func(request, *args, **kwargs)
         else:
-            return redirect('home')  # Redirect to the appropriate login page
+            return redirect('login_view')  # Redirect to the appropriate login page
 
     return _wrapped_view
-
-
-def home(request):
-    return render(request, 'index.html')
 
 
 
