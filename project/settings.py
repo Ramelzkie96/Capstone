@@ -127,6 +127,12 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 AUTH_USER_MODEL = 'account.User'
 
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Define the URL prefix for media files
+MEDIA_URL = '/media/'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

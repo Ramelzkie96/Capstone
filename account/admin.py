@@ -1,11 +1,10 @@
-# admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserChangeForm, AdminPasswordChangeForm
-from django.apps import apps
 from .models import User
 from .forms import SignUpForm
-
+from django.utils.html import format_html
+from django.conf import settings
 
 admin.site.site_header = "IT Chairman Admin"
 
@@ -18,22 +17,27 @@ class MyUserAdmin(BaseUserAdmin):
     add_form = SignUpForm
     change_password_form = AdminPasswordChangeForm
 
-    list_display = ('username', 'email', 'is_Faculty', 'is_Bits', 'is_superuser')  # Include 'is_superuser' here
-    list_filter = ('is_Faculty', 'is_Bits', 'is_superuser')  # Include 'is_superuser' here
+    def profile_picture_image(self, obj):
+        if obj.profile_picture:
+            return format_html('<div style="display: flex; justify-content: center;"><img src="{}" style="width: 30px; height: 30px; border-radius: 50%;" /></div>'.format(obj.profile_picture.url))
+        else:
+            default_image_url = '{}{}'.format(settings.MEDIA_URL, 'profile_pics/users.jpg')
+            return format_html('<div style="display: flex; justify-content: center;"><img src="{}" style="width: 30px; height: 30px; border-radius: 50%;" /></div>'.format(default_image_url))
+    profile_picture_image.short_description = 'Profile Picture'
 
+    list_display = ('username', 'email', 'profile_picture_image', 'is_Faculty', 'is_Bits', 'is_superuser',)
+    list_filter = ('is_Faculty', 'is_Bits', 'is_superuser')
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal Info', {'fields': ('email',)}),
-        ('Permissions', {'fields': ('is_Faculty', 'is_Bits', 'is_superuser', 'user_permissions')}),  # Include 'is_superuser' here
+        ('Personal Info', {'fields': ('email', 'profile_picture')}),  # Change here
+        ('Permissions', {'fields': ('is_Faculty', 'is_Bits', 'is_superuser', 'user_permissions')}),
     )
-
     add_fieldsets = (
-    (None, {
-        'classes': ('wide',),
-        'fields': ('username', 'email', 'password1', 'password2', 'is_Faculty', 'is_Bits', 'is_superuser', 'user_permissions'),
-    }),
-)
-
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'profile_picture', 'password1', 'password2', 'is_Faculty', 'is_Bits', 'is_superuser', 'user_permissions'),
+        }),
+    )
     search_fields = ('username', 'email')
     ordering = ('username',)
 
@@ -47,6 +51,10 @@ class MyUserAdmin(BaseUserAdmin):
             else:
                 form = self.change_password_form(user)
             return self.render_change_form(request, form, change=True, obj=user, form_url=form_url)
+
+    # Register the profile_picture_image method
+    profile_picture_image.short_description = 'Profile Picture'
+    list_display = ('username', 'email', 'profile_picture_image', 'is_Faculty', 'is_Bits', 'is_superuser',)
 
 # Register the modified admin class
 admin.site.register(User, MyUserAdmin)

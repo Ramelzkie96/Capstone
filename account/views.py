@@ -37,7 +37,7 @@ def bits(request):
 
 @login_required(login_url='home')  # Change 'index' to 'login_faculty' or the appropriate URL
 def faculty(request):
-    return render(request, 'faculty.html')
+    return render(request, 'faculty_dashboard.html')
 
 
 def bits_required(view_func):
