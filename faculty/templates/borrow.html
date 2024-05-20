@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %} <link rel="stylesheet" href="{% static 'css/borrow.css'%}">  {% endblock %}
+{% block extra_js %} <script src="{% static 'js/faculty_script.js'%}"></script>  {% endblock %}
+
+
+{% block content %}
+    <!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<img class="img" src="{% static 'images/logo.png' %}" alt="" width="50" height="50">
+			<span class="text">Welcome, Faculty</span>
+		</a>
+		<ul class="side-menu top">
+			<li>
+				<a href="{% url 'dashboard' %}">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text ">Dashboard</span>
+				</a>
+			</li>
+			<li class="active">
+				<a href="#">
+					<i class='bx bxs-box'></i>
+					<span class="text">Borrow</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxs-doughnut-chart' ></i>
+					<span class="text">Return</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-list-ul'></i>
+					<span class="text">All Equipment</span>
+				</a>
+			</li>
+			<li >
+				<a href="{% url 'student-record'%}">
+					<i class='bx bxs-group' ></i>
+					<span class="text">Student Record</span>
+				</a>
+			</li>
+		</ul>
+		<ul class="side-menu">
+			<li>
+				<a href="#">
+					<i class='bx bxs-cog' ></i>
+					<span class="text">Settings</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'logout' %}" class="logout">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+
+
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu'></i>
+			<a href="#" class="nav-link">Categories</a>
+			<form action="#">
+				<div class="form-input">
+					<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+				</div>
+			</form>
+			<input type="checkbox" id="switch-mode" hidden>
+			<label for="switch-mode" class="switch-mode"></label>
+			<a href="#" class="name">
+				<h5>Hello! {{ user.username }}</h5>
+			</a>
+			<a href="#" class="profile">
+				<!-- Check if the user has a profile picture -->
+				{% if user.profile_picture %}
+					<img src="{{ user.profile_picture.url }}">
+				{% else %}
+					<img src="{% static 'images/users.jpg' %}">
+				{% endif %}
+			</a>
+		</nav>
+		<!-- NAVBAR -->
+
+
+		<!-- MAIN -->
+		<main>
+			<div class="head-title">
+				<div class="left">
+					<h1>Borrow Student</h1>
+					<ul class="breadcrumb">
+						<li>
+							<a href="#">Borrow</a>
+						</li>
+						<li><i class='bx bx-chevron-right' ></i></li>
+						<li>
+							<a class="active" href="#">Student</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+
+			<div class="table-data">
+				<div class="order">
+					<div class="head">
+						<h3>Add Student Borrowed</h3>
+						<i class='bx bx-search' ></i>
+						<i class='bx bx-filter' ></i>
+					</div>
+					<form id="borrow-form" method="POST" action="{% url 'borrow' %}">
+						{% csrf_token %}
+						{% if error_message %}
+						<div class="error-message" style="color: red;">
+							<p>{{ error_message }}</p>
+						</div>
+						{% endif %}
+						<div class="dbl-field spacing">
+							<div class="field space">
+								<label>Student ID</label>
+								<input type="text" required name="student_id" id="student_id" placeholder="Enter Student ID">
+							</div>
+							<div class="field space">
+								<label>First Name</label>
+								<input type="text" name="first_name" id="first_name" required placeholder="Enter First Name">
+							</div>
+							<div class="field space">
+								<label>Last Name</label>
+								<input type="text" name="last_name" id="last_name" required placeholder="Enter Last Name">
+							</div>
+						</div>
+						<div class="dbl-field spacingg">
+							<div class="field">
+								<label>Course</label>
+								<input type="text" name="course" id="course" required placeholder="Enter Course">
+							</div>
+							<div class="field">
+								<label>Year</label>
+								<select class="caret" name="year" id="year" required>
+									<option value="">Select Year Level</option>
+									<option value="1st Year">1st Year</option>
+									<option value="2nd Year">2nd Year</option>
+									<option value="3rd Year">3rd Year</option>
+									<option value="4th Year">4th Year</option>
+									<!-- Add more options as needed -->
+								</select>
+							</div>
+						</div>
+						<div class="message">
+							<label>Description</label>
+							<textarea name="description" id="description" required placeholder="Enter Description"></textarea>
+						</div>
+						<div class="button-area">
+							<button type="submit" id="submit-btn" class="btnn">Submit</button>
+							<span></span>
+						</div>
+					</form>
+					
+				</div>
+			</div>
+
+			<div class="toast">
+				<div class="toast-content">
+					<i class="fas fa-solid fa-check check"></i>
+		
+					<div class="message">
+						<span class="text text-1">Success</span>
+						<span class="text text-2">Your changes has been saved</span>
+					</div>
+				</div>
+				<i class="fa-solid fa-xmark closee"></i>
+		
+				<div class="progress"></div>
+			</div>
+		
+		</main>
+		<!-- MAIN -->
+	</section>
+	<!-- CONTENT -->
+	
+{% endblock content %}

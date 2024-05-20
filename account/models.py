@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.conf import settings
-import os
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -26,20 +24,8 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     is_Faculty = models.BooleanField('Is Faculty', default=False)
-    is_Bits = models.BooleanField('Is Bits', default=False)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True) 
-    
-    def save(self, *args, **kwargs):
-        if not self.profile_picture:
-            # Set default image path
-            default_image_path = 'profile_pics/users.jpg'
-            # Check if the default image file exists
-            if os.path.exists(default_image_path):
-                # Open the default image file and assign it to the profile_picture field
-                with open(default_image_path, 'rb') as f:
-                    self.profile_picture.save('users.jpg', f, save=False)
-        super().save(*args, **kwargs)
-    
+
     objects = CustomUserManager()
     groups = models.ManyToManyField(
         "auth.Group",

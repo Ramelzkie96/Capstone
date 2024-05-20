@@ -7,7 +7,7 @@ class LoginForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "",
-                "placeholder": "Username",
+                "placeholder": "Username or User ID",
             }
         )
     )
@@ -58,4 +58,4 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'is_Faculty', 'is_Bits')
+        fields = ('username', 'email', 'password1', 'password2', 'is_Faculty')

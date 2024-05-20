@@ -3,7 +3,6 @@ from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from functools import wraps
-from django.contrib.auth.decorators import user_passes_test
 
 # Create your views here.
 
@@ -15,10 +14,7 @@ def login_view(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
-            if user is not None and user.is_Bits:
-                login(request, user)
-                return redirect('bits')
-            elif user is not None and user.is_Faculty:
+            if user is not None and user.is_Faculty:
                 login(request, user)
                 return redirect('faculty')
             else:
@@ -31,24 +27,9 @@ def logoutUser(request):
     logout(request)
     return redirect('login_view')
 
-@login_required(login_url='home')  # Change 'index' to 'login_bits' or the appropriate URL
-def bits(request):
-    return render(request, 'bits.html')
-
-@login_required(login_url='home')  # Change 'index' to 'login_faculty' or the appropriate URL
+@login_required(login_url='home')
 def faculty(request):
     return render(request, 'faculty_dashboard.html')
-
-
-def bits_required(view_func):
-    @wraps(view_func)
-    def _wrapped_view(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.is_Bits:
-            return view_func(request, *args, **kwargs)
-        else:
-            return redirect('login_view')  # Redirect to the appropriate login page
-
-    return _wrapped_view
 
 def faculty_required(view_func):
     @wraps(view_func)
@@ -59,6 +40,3 @@ def faculty_required(view_func):
             return redirect('login_view')  # Redirect to the appropriate login page
 
     return _wrapped_view
-
-
-

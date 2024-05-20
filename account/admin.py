@@ -25,17 +25,21 @@ class MyUserAdmin(BaseUserAdmin):
             return format_html('<div style="display: flex; justify-content: center;"><img src="{}" style="width: 30px; height: 30px; border-radius: 50%;" /></div>'.format(default_image_url))
     profile_picture_image.short_description = 'Profile Picture'
 
-    list_display = ('username', 'email', 'profile_picture_image', 'is_Faculty', 'is_Bits', 'is_superuser',)
-    list_filter = ('is_Faculty', 'is_Bits', 'is_superuser')
+    list_display = ('username', 'email', 'profile_picture_image', 'is_Faculty', 'is_superuser',)
+    list_filter = ('is_Faculty', 'is_superuser')
+    
+    # Modify fieldsets to include groups before user permissions
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal Info', {'fields': ('email', 'profile_picture')}),  # Change here
-        ('Permissions', {'fields': ('is_Faculty', 'is_Bits', 'is_superuser', 'user_permissions')}),
+        ('Personal Info', {'fields': ('email', 'profile_picture')}),
+        ('Permissions', {'fields': (('is_Faculty', 'is_superuser'),)}),
+        ('Groups', {'fields': ('groups',)}),
     )
+
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'profile_picture', 'password1', 'password2', 'is_Faculty', 'is_Bits', 'is_superuser', 'user_permissions'),
+            'fields': ('username', 'email', 'profile_picture', 'password1', 'password2', ('is_Faculty', 'is_superuser'), 'groups'),
         }),
     )
     search_fields = ('username', 'email')
@@ -51,10 +55,6 @@ class MyUserAdmin(BaseUserAdmin):
             else:
                 form = self.change_password_form(user)
             return self.render_change_form(request, form, change=True, obj=user, form_url=form_url)
-
-    # Register the profile_picture_image method
-    profile_picture_image.short_description = 'Profile Picture'
-    list_display = ('username', 'email', 'profile_picture_image', 'is_Faculty', 'is_Bits', 'is_superuser',)
 
 # Register the modified admin class
 admin.site.register(User, MyUserAdmin)
